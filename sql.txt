@@ -1,0 +1,116 @@
+CREATE TABLE adminrooms
+(
+ "id"    integer NOT NULL,
+ user_id integer NOT NULL,
+ CONSTRAINT PK_6 PRIMARY KEY ( "id" )
+);
+
+CREATE TABLE bingorooms
+(
+ "id"      integer NOT NULL,
+ bingo_id  integer NOT NULL,
+ case_text varchar(50) NOT NULL,
+ admin_id  integer NOT NULL,
+ CONSTRAINT PK_4 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_1 FOREIGN KEY ( bingo_id ) REFERENCES bingos ( "id" ),
+ CONSTRAINT FK_2 FOREIGN KEY ( admin_id ) REFERENCES adminrooms ( "id" )
+);
+
+-- ************************************** bingos
+CREATE TABLE bingos
+(
+ "id"      integer NOT NULL,
+ case_text varchar(50) NOT NULL,
+ CONSTRAINT PK_5 PRIMARY KEY ( "id" )
+);
+
+-- ************************************** extendusers
+CREATE TABLE extendusers
+(
+ "id"    integer NOT NULL,
+ "token" varchar(50) NOT NULL,
+ img     varchar(50) NOT NULL,
+ user_id integer NOT NULL,
+ room_id integer NOT NULL,
+ CONSTRAINT PK_8 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_1 FOREIGN KEY ( user_id ) REFERENCES users ( "id" )
+);
+
+-- ************************************** predictions
+CREATE TABLE predictions
+(
+ "id"         integer NOT NULL,
+ question     varchar(50) NOT NULL,
+ respons      varchar(50) NOT NULL,
+ start_at     time NOT NULL,
+ end_at       time NOT NULL,
+ status       varchar(50) NOT NULL,
+ timer        time NOT NULL,
+ is_validated varchar(50) NOT NULL,
+ CONSTRAINT PK_3 PRIMARY KEY ( "id" )
+);
+
+-- ************************************** rooms
+CREATE TABLE rooms
+(
+ "id"          integer NOT NULL,
+ user_id       integer NOT NULL,
+ prediction_id integer NOT NULL,
+ bingoroom_id  integer NOT NULL,
+ admin_id      integer NOT NULL,
+ created_at    date NOT NULL,
+ close_at      date NOT NULL,
+ status        varchar(50) NOT NULL,
+ CONSTRAINT PK_2 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_4 FOREIGN KEY ( user_id ) REFERENCES extendusers ( "id" ),
+ CONSTRAINT FK_4_1 FOREIGN KEY ( admin_id ) REFERENCES adminrooms ( "id" ),
+ CONSTRAINT FK_4_2 FOREIGN KEY ( bingoroom_id ) REFERENCES bingorooms ( "id" ),
+ CONSTRAINT FK_4_3 FOREIGN KEY ( prediction_id ) REFERENCES predictions ( "id" )
+);
+
+-- ************************************** user_bingo_cases
+CREATE TABLE user_bingo_cases
+(
+ "id"       integer NOT NULL,
+ user_id    integer NOT NULL,
+ room_id    integer NOT NULL,
+ case_text  varchar(50) NOT NULL,
+ is_checked boolean NOT NULL,
+ "position" integer NOT NULL,
+ CONSTRAINT PK_9 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_1 FOREIGN KEY ( user_id ) REFERENCES extendusers ( "id" ),
+ CONSTRAINT FK_2 FOREIGN KEY ( room_id ) REFERENCES rooms ( "id" )
+);
+
+-- ************************************** user_scores
+CREATE TABLE user_scores
+(
+ "id"      integer NOT NULL,
+ score     integer NOT NULL,
+ user_id   integer NOT NULL,
+ room_id   integer NOT NULL,
+ update_at time NOT NULL,
+ CONSTRAINT PK_1 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_1 FOREIGN KEY ( room_id ) REFERENCES rooms ( "id" ),
+ CONSTRAINT FK_2 FOREIGN KEY ( user_id ) REFERENCES extendusers ( "id" )
+);
+
+-- ************************************** users
+CREATE TABLE users
+(
+ "id"     integer NOT NULL,
+ email    varchar(50) NOT NULL,
+ password varchar(50) NOT NULL,
+ username varchar(50) NOT NULL,
+ CONSTRAINT PK_7 PRIMARY KEY ( "id" )
+);
+
+-- ************************************** validated_cases
+CREATE TABLE validated_cases
+(
+ "id"         integer NOT NULL,
+ bingoroom_id integer NOT NULL,
+ is_checked   boolean NOT NULL,
+ CONSTRAINT PK_10 PRIMARY KEY ( "id" ),
+ CONSTRAINT FK_1 FOREIGN KEY ( bingoroom_id ) REFERENCES bingorooms ( "id" )
+);
