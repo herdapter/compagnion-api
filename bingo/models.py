@@ -4,13 +4,11 @@ from django.conf import settings
 class UserBingoCases(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING,  # ou CASCADE selon ton besoin
-        null=True,  # <-- Ajoute cette option
-        blank=True
+        on_delete=models.DO_NOTHING,
     )
     room = models.ForeignKey('room.Rooms', models.DO_NOTHING)
     case_text = models.CharField(max_length=50)
-    is_checked = models.BooleanField()
+    is_checked = models.BooleanField(default=False)
     position = models.IntegerField()
 
     class Meta:
@@ -19,7 +17,7 @@ class UserBingoCases(models.Model):
 
 class ValidatedCases(models.Model):
     bingoroom = models.ForeignKey('Bingorooms', models.DO_NOTHING)
-    is_checked = models.BooleanField()
+    is_checked = models.BooleanField(default=False)
 
     class Meta:
         managed = True
@@ -41,3 +39,5 @@ class Bingos(models.Model):
     class Meta:
         managed = True
         db_table = 'bingos'
+    def __str__(self):
+        return f'Bingo case text {self.case_text}'

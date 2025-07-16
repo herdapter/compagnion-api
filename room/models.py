@@ -1,19 +1,13 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 class Rooms(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING,  # ou CASCADE selon ton besoin
-        null=True,  # <-- Ajoute cette option
-        blank=True
-    )
-    prediction = models.ForeignKey('prediction.Predictions', models.DO_NOTHING)
-    bingoroom = models.ForeignKey('bingo.Bingorooms', models.DO_NOTHING)
-    admin = models.ForeignKey('room.Adminrooms', models.DO_NOTHING)
-    created_at = models.DateField()
-    close_at = models.DateField()
+    prediction = models.ForeignKey('prediction.Predictions', models.DO_NOTHING, null=True, blank=True)
+    bingoroom = models.ForeignKey('bingo.Bingorooms', models.DO_NOTHING, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    close_at = models.DateTimeField(null=True, blank=True)
     statuschoice = [
         ("en cours", "en cours"),
         ("terminé", "terminé"),
@@ -45,12 +39,13 @@ class RoomMembership(models.Model):
         unique_together = ('user', 'room')
 
 class Adminrooms(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING,  # ou CASCADE selon ton besoin
-        null=True,  # <-- Ajoute cette option
-        blank=True
-    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    room = models.ForeignKey(Rooms, on_delete=models.CASCADE)
+
     class Meta:
         managed = True
+        unique_together = ('user', 'room')
         db_table = 'adminrooms'
+
+    def __str__(self):
+        return f"Admin {self.user.username} de la room {self.room.name}"
