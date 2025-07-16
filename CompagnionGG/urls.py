@@ -31,6 +31,6 @@ urlpatterns = [
     path('api/account/', include('account.urls')),
     # path('api/bingo/', include('bingo.urls')),
     # path('api/prediction/', include('prediction.urls')),
-    # path('api/room/', include('room.urls')),
+    path('api/room/', include('room.urls')),
 ]
 
