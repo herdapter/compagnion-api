@@ -33,4 +33,3 @@ urlpatterns = [
     # path('api/prediction/', include('prediction.urls')),
     path('api/room/', include('room.urls')),
 ]
-
